@@ -165,9 +165,52 @@ top_chf_ms.markers <- chf.markers %>% group_by(cluster) %>% top_n(n = 3, wt = av
 
 FeaturePlot(csf_ms.integrated, features = top_chf_ms.markers$gene)
 ###vision
-library(devtools)
-install_github("YosefLab/VISION")
+###vision
 
 
+
+library(VISION)
+signatures <- c("/mnt/Data10tb/student9_data/GSE138266_RAW/Signatures/c7.all.v7.2.symbols.gmt")
+
+vision.obj_pbmc_cont <- Vision(pbmc_cont.integrated, signatures = signatures, projection_methods = "UMAP")
+
+vision.obj_pbmc_cont <- analyze(vision.obj_pbmc_cont)
+
+viewResults(vision.obj_pbmc_cont)
+
+vision.obj_csf_ms <- addProjection(vis, "UMAP", projection)
+
+
+# finding cell types with scCATCH( only for pbmc becouse this there is no CSF tissue in scCATCH)
+library(scCATCH)
+pbmc_ms.markers_annot<- scCATCH(object = pbmc_ms.markers,species = 'Human',tissue = c('Blood','Peripheral blood','Bone marrow'))
+colnames(pbmc_ms.markers_annot)[3] <- 'scCATCH_cell_type'
+
+pbmc_cont.markers_annot<- scCATCH(object = pbmc_cont.markers,species = 'Human',tissue = c('Blood','Peripheral blood','Bone marrow'))
+colnames(pbmc_cont.markers_annot)[3] <- 'scCATCH_cell_type'
+
+#annotatig cell types to clasters 
+
+pbmc_ms.cluster.ids <- pbmc_ms.markers_annot$scCATCH_cell_type
+names(pbmc_ms.cluster.ids) <- levels(pbmc_ms.integrated)
+pbmc_ms.integrated <- RenameIdents(pbmc_ms.integrated, pbmc_ms.cluster.ids)
+
+DimPlot(pbmc_ms.integrated, reduction = "umap", label = TRUE, pt.size = 0.5) + NoLegend()
+
+pbmc_cont.cluster.ids <- pbmc_cont.markers_annot$scCATCH_cell_type
+names(pbmc_cont.cluster.ids) <- levels(pbmc_cont.integrated)
+pbmc_cont.integrated <- RenameIdents(pbmc_cont.integrated, pbmc_cont.cluster.ids)
+
+DimPlot(pbmc_cont.integrated, reduction = "umap", label = TRUE, pt.size = 0.5) + NoLegend()
+
+
+#####diff exp analysis
+pbmc.merge <- merge(pbmc_ms.integrated, pbmc_cont.integrated, add.cell.ids = c("pbmc_ms.integrated", "pbmc_cont.integrated"))
+pbmcall.list <- SplitObject(pbmc.merge)
+
+# Find differentially expressed features between CD14+ and FCGR3A+ Monocytes
+monocyte.de.markers <- FindMarkers(pbmcall.list,  cells.1 = "pbmc_ms",cells.1 = "pbmc_cont")
+# view results
+head(monocyte.de.markers)
 
 
