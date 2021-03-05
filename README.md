@@ -30,3 +30,15 @@ PBMC_MS и PBMC_cont:
 ![PBMC_cont](https://github.com/Barabaika/Single_cell_csf/blob/main/pbmc_cont3.png)
 
 Найдены маркеры для каждого кластера 
+
+Аннотации для кластеров клеток PBMC былы сделаны с помощью scCATCH
+
+              pbmc_ms
+
+![pbmc_ms_umap_annot](https://user-images.githubusercontent.com/73124756/110103830-7035e700-7db7-11eb-9200-c989b21bebc5.png)
+
+              pbmc_cont
+
+![pbmc_cont_umap_annot](https://user-images.githubusercontent.com/73124756/110103853-788e2200-7db7-11eb-9653-4aa2b7e1e383.png)
+
+
