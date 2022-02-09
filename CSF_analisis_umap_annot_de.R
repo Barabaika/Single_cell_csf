@@ -226,6 +226,33 @@ plots <- VlnPlot(CSF.integrated, features = markers.to.plot, split.by = "stim", 
                  pt.size = 0, combine = FALSE, split.plot = TRUE)
 CombinePlots(plots = plots, ncol = 5)
 
+### Vulcano plots
+# plot DEGs volcano plot
+# if (!requireNamespace('BiocManager', quietly = TRUE))
+#   install.packages('BiocManager')
+# 
+# BiocManager::install('EnhancedVolcano')
+
+library(EnhancedVolcano)
+
+res = regulatoryTcell.markers
+res <- res[abs(res['avg_log2FC']) < 100,]
+res <- res[res['p_val_adj'] < 0.05 ,]
+res <- res[!is.infinite(rowSums(res)),]
+#  delete genes that have to big values
+# res <- res[!(row.names(res) %in% c('RPL37A','RPS2', 'MALAT1', 'RPS15A', 'RPL41', 'HBB', 'HBA2', 'RPS29', 'RPS27', 'RPL29')), ]
+write.csv(res, file='PBMC_Tregs.csv')
+
+EnhancedVolcano(res,
+                lab = rownames(res),
+                x = 'avg_log2FC',
+                y = 'p_val_adj',
+                title = 'PBMC Tregs MS vs CONT',
+                pCutoff = 0.05,
+                FCcutoff = 0.5,
+                subtitle = paste0('p-value cutoff: 0.05 ', 'log2FC cutoff: 1'))
+
+
 # ###vision
 # # devtools::install_github("YosefLab/VISION")
 # library(VISION)
