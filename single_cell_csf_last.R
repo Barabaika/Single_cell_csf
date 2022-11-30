@@ -214,3 +214,5 @@ monocyte.de.markers <- FindMarkers(pbmcall.list,  cells.1 = "pbmc_ms",cells.1 = 
 head(monocyte.de.markers)
 
 
+list_objects_batches = SplitObject(CSF.integrated, split.by <- 'orig.ident')
+batch1 <- list_objects_batches[['CSF_MS_1']]
