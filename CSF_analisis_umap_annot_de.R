@@ -1,3 +1,6 @@
+#!/usr/bin/Rscript
+# -*- coding: utf-8 -*-
+
 library(Matrix)
 library(Seurat)
 library(dplyr)

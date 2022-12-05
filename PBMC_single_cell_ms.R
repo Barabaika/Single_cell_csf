@@ -1,3 +1,6 @@
+#!/usr/bin/Rscript
+# -*- coding: utf-8 -*-
+
 # devtools::install_github('ZJUFanLab/scCATCH')
 library(Matrix)
 library(Seurat)

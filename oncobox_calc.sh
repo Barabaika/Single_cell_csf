@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e 
+
 # get arguments:
 # 1- input path to folder
 # 1- output path to folder

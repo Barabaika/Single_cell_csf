@@ -1,3 +1,6 @@
+#!/usr/bin/Rscript
+# -*- coding: utf-8 -*-
+
 remotes::install_github('chris-mcginnis-ucsf/DoubletFinder')
 suppressMessages(require(DoubletFinder))
 
