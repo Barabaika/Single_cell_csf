@@ -4,14 +4,20 @@
 remotes::install_github('chris-mcginnis-ucsf/DoubletFinder')
 suppressMessages(require(DoubletFinder))
 
-library(Matrix)
-library(Seurat)
-library(dplyr)
+if !require("Matrix") install.packages("Matrix")
+if !require("Seurat") install.packages("Seurat")
+if !require("dplyr") install.packages("dplyr")
+if !require("scCATCH") install.packages("scCATCH")
+if !require("VISION") install.packages("VISION")
 
+# PARAMS
 
-setwd ("/mnt/Data10tb/student9_data/GSE138266_RAW")
-####loading file 
+WORKDIR="/mnt/Data10tb/student9_data/GSE138266_RAW"
+setwd(WORKDIR)
 data.dir = "/mnt/Data10tb/student9_data/GSE138266_RAW/PBMC_cont_3"
+
+
+####loading file 
 
 csf_ms_1.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/CSF_MS_1")
 csf_ms_2.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/CSF_MS_2")
@@ -64,7 +70,6 @@ pbmc_cont_3.data <- CreateSeuratObject(counts = pbmc_cont_3.data, min.cells = 3,
 pbmc_cont_4.data <- CreateSeuratObject(counts = pbmc_cont_4.data, min.cells = 3, min.features = 200, project = "pbmc_cont_4")
 pbmc_cont_5.data <- CreateSeuratObject(counts = pbmc_cont_5.data, min.cells = 3, min.features = 200, project = "pbmc_cont_5")
 
-#совместить все в одно
 csf_ms <- merge(csf_ms_1.data, c(csf_ms_2.data, csf_ms_3.data, csf_ms_4.data, csf_ms_5.data,csf_ms_6.data), add.cell.ids = c("csf_ms_1", "csf_ms_2", "csf_ms_3", "csf_ms_4", "csf_ms_5", "csf_ms_6"))
 csf_cont <- merge(csf_cont_1.data, c(csf_cont_2.data, csf_cont_3.data, csf_cont_4.data, csf_cont_5.data, csf_cont_6.data),add.cell.ids = c("csf_cont_1", "csf_cont_2", "csf_cont_3", "csf_cont_4", "csf_cont_5", "csf_cont_6" ))
 pbmc_ms <- merge(pbmc_ms_1.data, c(pbmc_ms_2.data, pbmc_ms_3.data, pbmc_ms_4.data, pbmc_ms_5.data),
@@ -82,7 +87,6 @@ rm(csf_ms_1.data, csf_ms_2.data, csf_ms_3.data, csf_ms_4.data,
 # run garbage collect to free up memory
 gc()
 
-#  сделать список (обратное действие,но както по другому у меня не вышло=))
 csf_ms.list <- SplitObject(csf_ms)
 csf_cont.list <- SplitObject(csf_cont)
 pbmc_ms.list <- SplitObject(pbmc_ms)
@@ -149,7 +153,8 @@ csf_ms.anchors <- FindIntegrationAnchors(object.list = csf_ms.list, normalizatio
 csf_ms.integrated <- IntegrateData(anchorset = csf_ms.anchors, normalization.method = "SCT", 
                                      verbose = FALSE)
 
-#clastering
+# clustering
+
 csf_ms.integrated <- RunPCA(csf_ms.integrated, verbose = FALSE)
 csf_ms.integrated <- RunUMAP(csf_ms.integrated, dims = 1:30)
 
@@ -172,10 +177,9 @@ FeaturePlot(csf_ms.integrated, features = top_chf_ms.markers$gene)
 
 
 
-library(VISION)
 signatures <- c("/mnt/Data10tb/student9_data/GSE138266_RAW/Signatures/c7.all.v7.2.symbols.gmt")
 
-vision.obj_pbmc_cont <- Vision(pbmc_cont.integrated, signatures = signatures, projection_methods = "UMAP")
+vision.obj_pbmc_cont <- VISION::Vision(pbmc_cont.integrated, signatures = signatures, projection_methods = "UMAP")
 
 vision.obj_pbmc_cont <- analyze(vision.obj_pbmc_cont)
 
@@ -185,11 +189,10 @@ vision.obj_csf_ms <- addProjection(vis, "UMAP", projection)
 
 
 # finding cell types with scCATCH( only for pbmc becouse this there is no CSF tissue in scCATCH)
-library(scCATCH)
-pbmc_ms.markers_annot<- scCATCH(object = pbmc_ms.markers,species = 'Human',tissue = c('Blood','Peripheral blood','Bone marrow'))
+pbmc_ms.markers_annot<- scCATCH::scCATCH(object = pbmc_ms.markers,species = 'Human',tissue = c('Blood','Peripheral blood','Bone marrow'))
 colnames(pbmc_ms.markers_annot)[3] <- 'scCATCH_cell_type'
 
-pbmc_cont.markers_annot<- scCATCH(object = pbmc_cont.markers,species = 'Human',tissue = c('Blood','Peripheral blood','Bone marrow'))
+pbmc_cont.markers_annot<- scCATCH::scCATCH(object = pbmc_cont.markers,species = 'Human',tissue = c('Blood','Peripheral blood','Bone marrow'))
 colnames(pbmc_cont.markers_annot)[3] <- 'scCATCH_cell_type'
 
 #annotatig cell types to clasters 

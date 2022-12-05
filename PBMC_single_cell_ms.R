@@ -2,14 +2,23 @@
 # -*- coding: utf-8 -*-
 
 # devtools::install_github('ZJUFanLab/scCATCH')
-library(Matrix)
-library(Seurat)
-library(dplyr)
-library(cowplot)
 
-setwd ("/mnt/Data10tb/student9_data/GSE138266_RAW")
-####loading file 
+if !require("Matrix") install.packages("Matrix")
+if !require("Seurat") install.packages("Seurat")
+if !require("dplyr") install.packages("dplyr")
+if !require("cowplot") install.packages("cowplot")
+if !require("VISION") install.packages("VISION")
+if !require("geneLenDataBase") install.packages("geneLenDataBase")
+if !require("clusterProfiler") install.packages("clusterProfiler")
+if !require("fgsea") install.packages("fgsea")
+
+# PARAMS
+
+WORKDIR="/mnt/Data10tb/student9_data/GSE138266_RAW"
+setwd(WORKDIR)
 data.dir = "/mnt/Data10tb/student9_data/GSE138266_RAW/PBMC_cont_3"
+
+# LOAD DATA
 
 pbmc_ms_1.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/PBMC_MS_1")
 pbmc_ms_2.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/PBMC_MS_2")
@@ -107,7 +116,6 @@ FeaturePlot(pbmc.integrated, features = top_chf_ms.markers$gene)
 
 ###vision
 
-library(VISION)
 signatures <- c("/mnt/Data10tb/student9_data/GSE138266_RAW/Signatures/c7.all.v7.2.symbols.gmt")
 
 vision.obj_pbmc <- Vision(pbmc.integrated, signatures = signatures, projection_methods = "UMAP")
