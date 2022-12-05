@@ -7,7 +7,6 @@
 [![](https://img.shields.io/github/languages/code-size/Barabaika/Single_cell_csf)](https://img.shields.io/github/languages/code-size/Barabaika/Single_cell_csf)
 [![](https://img.shields.io/github/languages/top/Barabaika/Single_cell_csf)](https://img.shields.io/github/languages/top/Barabaika/Single_cell_csf)
 [![](https://img.shields.io/github/issues/Barabaika/Single_cell_csf)](https://img.shields.io/github/issues/Barabaika/Single_cell_csf)
-[![](https://img.shields.io/github/license/Barabaika/Single_cell_csf)](https://img.shields.io/github/license/Barabaika/Single_cell_csf)
 
 This repository contains primary source code for *"scRNA-seq for drug repurposing in multiple sclerosis"* manuscript. 
 
@@ -43,8 +42,8 @@ Overall pipeline of the analysis:
 
 2. **Cluster annotation with marker genes**
 
-`python search_marker_genes.py`
-`Search_for_cell_types.ipynb`
++ `python search_marker_genes.py`
++ `Search_for_cell_types.ipynb`
 
 3. **Estimation of pathway activation by Oncobox**
 
@@ -60,7 +59,7 @@ source ~/venv/bin/activate
 Making a table with genes from top 10 biopathways (min gene number = 1)
 
 ```bash
-python genes_from_top_pathways.py > genes_from_top10_pathways.log
+python3 genes_from_top_pathways.py > genes_from_top10_pathways.log
 ```
 
 4. **Connectivity Mapping**
