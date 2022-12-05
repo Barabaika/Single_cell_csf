@@ -1,44 +1,52 @@
-library(Matrix)
-library(Seurat)
-library(dplyr)
-# install.packages("harmony")
-library(harmony)
-library(SeuratDisk)
-library(ggplot2)
+#!/usr/bin/Rscript
+# -*- coding: utf-8 -*-
 
+if !require("Matrix") install.packages("Matrix")
+if !require("Seurat") install.packages("Seurat")
+if !require("dplyr") install.packages("dplyr")
+if !require("harmony") install.packages("harmony")
+if !require("SeuratDisk") install.packages("SeuratDisk")
+if !require("ggplot2") install.packages("ggplot2")
 
+# PARAMS
 
-# setwd ("/mnt/Data10tb/student9_data/GSE138266_RAW")
-####loading file 
-# data.dir = "/mnt/Data10tb/student9_data/GSE138266_RAW/CSF_cont_3"
+WORKDIR="/data/ashevtsov/MS_data/raw_data/"
+setwd(WORKDIR)
 
-PBMC_MS_1.data <- Read10X("/data/ashevtsov/MS_data/raw_data/GSM4104134_MS19270_PBMCs")
-PBMC_MS_2.data <- Read10X("/data/ashevtsov/MS_data/raw_data/GSM4104135_MS71658_PBMCs")
-PBMC_MS_3.data <- Read10X("/data/ashevtsov/MS_data/raw_data/GSM4104136_MS49131_PBMCs")
-PBMC_MS_4.data <- Read10X("/data/ashevtsov/MS_data/raw_data/GSM4104137_MS60249_PBMCs")
-PBMC_MS_5.data <- Read10X("/data/ashevtsov/MS_data/raw_data/GSM4104138_MS74594_PBMCs")
+min.cells = 3
+min.features = 200
 
-PBMC_cont_1.data <- Read10X("/data/ashevtsov/MS_data/raw_data/GSM4104139_PST83775_PBMCs")
-PBMC_cont_2.data <- Read10X("/data/ashevtsov/MS_data/raw_data/GSM4104140_PTC32190_PBMCs")
-PBMC_cont_3.data <- Read10X("/data/ashevtsov/MS_data/raw_data/GSM4104141_PST95809_PBMCs")
-PBMC_cont_4.data <- Read10X("/data/ashevtsov/MS_data/raw_data/GSM4104142_PTC41540_PBMCs")
-PBMC_cont_5.data <- Read10X("/data/ashevtsov/MS_data/raw_data/GSM4104143_PTC85037_PBMCs")
+cell.ids <- c("PBMC_MS_1", "PBMC_MS_2", "PBMC_MS_3", "PBMC_MS_4", "PBMC_MS_5", 
+              "PBMC_cont_1", "PBMC_cont_2", "PBMC_cont_3", "PBMC_cont_4", "PBMC_cont_5")
 
-PBMC_MS_1.data <- CreateSeuratObject(counts = PBMC_MS_1.data, min.cells = 3, min.features = 200, project = "PBMC_MS_1")
-PBMC_MS_2.data <- CreateSeuratObject(counts = PBMC_MS_2.data, min.cells = 3, min.features = 200, project = "PBMC_MS_2")
-PBMC_MS_3.data <- CreateSeuratObject(counts = PBMC_MS_3.data, min.cells = 3, min.features = 200, project = "PBMC_MS_3")
-PBMC_MS_4.data <- CreateSeuratObject(counts = PBMC_MS_4.data, min.cells = 3, min.features = 200, project = "PBMC_MS_4")
-PBMC_MS_5.data <- CreateSeuratObject(counts = PBMC_MS_5.data, min.cells = 3, min.features = 200, project = "PBMC_MS_5")
+# LOAD DATA
 
-PBMC_cont_1.data <- CreateSeuratObject(counts = PBMC_cont_1.data, min.cells = 3, min.features = 200, project = "PBMC_cont_1")
-PBMC_cont_2.data <- CreateSeuratObject(counts = PBMC_cont_2.data, min.cells = 3, min.features = 200, project = "PBMC_cont_2")
-PBMC_cont_3.data <- CreateSeuratObject(counts = PBMC_cont_3.data, min.cells = 3, min.features = 200, project = "PBMC_cont_3")
-PBMC_cont_4.data <- CreateSeuratObject(counts = PBMC_cont_4.data, min.cells = 3, min.features = 200, project = "PBMC_cont_4")
-PBMC_cont_5.data <- CreateSeuratObject(counts = PBMC_cont_5.data, min.cells = 3, min.features = 200, project = "PBMC_cont_5")
+PBMC_MS_1.data <- Read10X(file.path(WORKDIR, "GSM4104134_MS19270_PBMCs")
+PBMC_MS_2.data <- Read10X(file.path(WORKDIR, "GSM4104135_MS71658_PBMCs")
+PBMC_MS_3.data <- Read10X(file.path(WORKDIR, "GSM4104136_MS49131_PBMCs")
+PBMC_MS_4.data <- Read10X(file.path(WORKDIR, "GSM4104137_MS60249_PBMCs")
+PBMC_MS_5.data <- Read10X(file.path(WORKDIR, "GSM4104138_MS74594_PBMCs")
+
+PBMC_cont_1.data <- Read10X(file.path(WORKDIR, "GSM4104139_PST83775_PBMCs")
+PBMC_cont_2.data <- Read10X(file.path(WORKDIR, "GSM4104140_PTC32190_PBMCs")
+PBMC_cont_3.data <- Read10X(file.path(WORKDIR, "GSM4104141_PST95809_PBMCs")
+PBMC_cont_4.data <- Read10X(file.path(WORKDIR, "GSM4104142_PTC41540_PBMCs")
+PBMC_cont_5.data <- Read10X(file.path(WORKDIR, "GSM4104143_PTC85037_PBMCs")
+
+PBMC_MS_1.data <- CreateSeuratObject(counts = PBMC_MS_1.data, min.cells = min.cells, min.features = min.features, project = "PBMC_MS_1")
+PBMC_MS_2.data <- CreateSeuratObject(counts = PBMC_MS_2.data, min.cells = min.cells, min.features = min.features, project = "PBMC_MS_2")
+PBMC_MS_3.data <- CreateSeuratObject(counts = PBMC_MS_3.data, min.cells = min.cells, min.features = min.features, project = "PBMC_MS_3")
+PBMC_MS_4.data <- CreateSeuratObject(counts = PBMC_MS_4.data, min.cells = min.cells, min.features = min.features, project = "PBMC_MS_4")
+PBMC_MS_5.data <- CreateSeuratObject(counts = PBMC_MS_5.data, min.cells = min.cells, min.features = min.features, project = "PBMC_MS_5")
+
+PBMC_cont_1.data <- CreateSeuratObject(counts = PBMC_cont_1.data, min.cells = min.cells, min.features = min.features, project = "PBMC_cont_1")
+PBMC_cont_2.data <- CreateSeuratObject(counts = PBMC_cont_2.data, min.cells = min.cells, min.features = min.features, project = "PBMC_cont_2")
+PBMC_cont_3.data <- CreateSeuratObject(counts = PBMC_cont_3.data, min.cells = min.cells, min.features = min.features, project = "PBMC_cont_3")
+PBMC_cont_4.data <- CreateSeuratObject(counts = PBMC_cont_4.data, min.cells = min.cells, min.features = min.features, project = "PBMC_cont_4")
+PBMC_cont_5.data <- CreateSeuratObject(counts = PBMC_cont_5.data, min.cells = min.cells, min.features = min.features, project = "PBMC_cont_5")
 
 PBMC <- merge(PBMC_MS_1.data, c(PBMC_MS_2.data, PBMC_MS_3.data, PBMC_MS_4.data, PBMC_MS_5.data, PBMC_cont_1.data, PBMC_cont_2.data, PBMC_cont_3.data, PBMC_cont_4.data, PBMC_cont_5.data), 
-              add.cell.ids = c("PBMC_MS_1", "PBMC_MS_2", "PBMC_MS_3", "PBMC_MS_4", "PBMC_MS_5", 
-                               "PBMC_cont_1", "PBMC_cont_2", "PBMC_cont_3", "PBMC_cont_4", "PBMC_cont_5"))
+              add.cell.ids = cell.ids)
 
 
 PBMC.list <- SplitObject(PBMC)

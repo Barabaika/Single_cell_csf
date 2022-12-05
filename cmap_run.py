@@ -5,9 +5,7 @@ import numpy as np
 import os
 from time import sleep
 
-
 REVERSED_MOD = True
-
 sample = 'CSF'
 
 PATH = f'/data/ashevtsov/MS_data/{sample}/oncobox_res/merged/{sample}_genes_from_top10_all_cells_bipathways_min1genes.csv'

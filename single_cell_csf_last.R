@@ -14,61 +14,65 @@ if !require("VISION") install.packages("VISION")
 
 WORKDIR="/mnt/Data10tb/student9_data/GSE138266_RAW"
 setwd(WORKDIR)
-data.dir = "/mnt/Data10tb/student9_data/GSE138266_RAW/PBMC_cont_3"
+
+min.cells = 3
+min.features = 200
+
+signatures <- c("/mnt/Data10tb/student9_data/GSE138266_RAW/Signatures/c7.all.v7.2.symbols.gmt")
 
 
-####loading file 
+# LOAD DATA
 
-csf_ms_1.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/CSF_MS_1")
-csf_ms_2.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/CSF_MS_2")
-csf_ms_3.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/CSF_MS_3")
-csf_ms_4.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/CSF_MS_4")
-csf_ms_5.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/CSF_MS_5")
-csf_ms_6.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/CSF_MS_6")
-csf_cont_1.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/CSF_cont_1")
-csf_cont_2.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/CSF_cont_2")
-csf_cont_3.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/CSF_cont_3")
-csf_cont_4.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/CSF_cont_4")
-csf_cont_5.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/CSF_cont_5")
-csf_cont_6.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/CSF_cont_6")
+csf_ms_1.data <- Read10X(file.path(WORKDIR, "CSF_MS_1")
+csf_ms_2.data <- Read10X(file.path(WORKDIR, "CSF_MS_2")
+csf_ms_3.data <- Read10X(file.path(WORKDIR, "CSF_MS_3")
+csf_ms_4.data <- Read10X(file.path(WORKDIR, "CSF_MS_4")
+csf_ms_5.data <- Read10X(file.path(WORKDIR, "CSF_MS_5")
+csf_ms_6.data <- Read10X(file.path(WORKDIR, "CSF_MS_6")
+csf_cont_1.data <- Read10X(file.path(WORKDIR, "CSF_cont_1")
+csf_cont_2.data <- Read10X(file.path(WORKDIR, "CSF_cont_2")
+csf_cont_3.data <- Read10X(file.path(WORKDIR, "CSF_cont_3")
+csf_cont_4.data <- Read10X(file.path(WORKDIR, "CSF_cont_4")
+csf_cont_5.data <- Read10X(file.path(WORKDIR, "CSF_cont_5")
+csf_cont_6.data <- Read10X(file.path(WORKDIR, "CSF_cont_6")
 
-pbmc_ms_1.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/PBMC_MS_1")
-pbmc_ms_2.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/PBMC_MS_2")
-pbmc_ms_3.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/PBMC_MS_3")
-pbmc_ms_4.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/PBMC_MS_4")
-pbmc_ms_5.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/PBMC_MS_5")
-pbmc_cont_1.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/PBMC_cont_1")
-pbmc_cont_2.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/PBMC_cont_2")
-pbmc_cont_3.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/PBMC_cont_3")
-pbmc_cont_4.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/PBMC_cont_4")
-pbmc_cont_5.data <- Read10X("/mnt/Data10tb/student9_data/GSE138266_RAW/PBMC_cont_5")
+pbmc_ms_1.data <- Read10X(file.path(WORKDIR, "PBMC_MS_1")
+pbmc_ms_2.data <- Read10X(file.path(WORKDIR, "PBMC_MS_2")
+pbmc_ms_3.data <- Read10X(file.path(WORKDIR, "PBMC_MS_3")
+pbmc_ms_4.data <- Read10X(file.path(WORKDIR, "PBMC_MS_4")
+pbmc_ms_5.data <- Read10X(file.path(WORKDIR, "PBMC_MS_5")
+pbmc_cont_1.data <- Read10X(file.path(WORKDIR, "PBMC_cont_1")
+pbmc_cont_2.data <- Read10X(file.path(WORKDIR, "PBMC_cont_2")
+pbmc_cont_3.data <- Read10X(file.path(WORKDIR, "PBMC_cont_3")
+pbmc_cont_4.data <- Read10X(file.path(WORKDIR, "PBMC_cont_4")
+pbmc_cont_5.data <- Read10X(file.path(WORKDIR, "PBMC_cont_5")
 
 
 
 ########################## creating seurat object + QC FILTERING
-csf_ms_1.data <- CreateSeuratObject(counts = csf_ms_1.data, min.cells = 3, min.features = 200, project = "csf_ms_1")
-csf_ms_2.data <- CreateSeuratObject(counts = csf_ms_2.data, min.cells = 3, min.features = 200, project = "csf_ms_2")
-csf_ms_3.data <- CreateSeuratObject(counts = csf_ms_3.data, min.cells = 3, min.features = 200, project = "csf_ms_3")
-csf_ms_4.data <- CreateSeuratObject(counts = csf_ms_4.data, min.cells = 3, min.features = 200, project = "csf_ms_4")
-csf_ms_5.data <- CreateSeuratObject(counts = csf_ms_5.data, min.cells = 3, min.features = 200, project = "csf_ms_5")
-csf_ms_6.data <- CreateSeuratObject(counts = csf_ms_6.data, min.cells = 3, min.features = 200, project = "csf_ms_6")
-csf_cont_1.data <- CreateSeuratObject(counts = csf_cont_1.data, min.cells = 3, min.features = 200, project = "csf_cont_1")
-csf_cont_2.data <- CreateSeuratObject(counts = csf_cont_2.data, min.cells = 3, min.features = 200, project = "csf_cont_2")
-csf_cont_3.data <- CreateSeuratObject(counts = csf_cont_3.data, min.cells = 3, min.features = 200, project = "csf_cont_3")
-csf_cont_4.data <- CreateSeuratObject(counts = csf_cont_4.data, min.cells = 3, min.features = 200, project = "csf_cont_4")
-csf_cont_5.data <- CreateSeuratObject(counts = csf_cont_5.data, min.cells = 3, min.features = 200, project = "csf_cont_5")
-csf_cont_6.data <- CreateSeuratObject(counts = csf_cont_6.data, min.cells = 3, min.features = 200, project = "csf_cont_6")
+csf_ms_1.data <- CreateSeuratObject(counts = csf_ms_1.data, min.cells = min.cells, min.features = min.features, project = "csf_ms_1")
+csf_ms_2.data <- CreateSeuratObject(counts = csf_ms_2.data, min.cells = min.cells, min.features = min.features, project = "csf_ms_2")
+csf_ms_3.data <- CreateSeuratObject(counts = csf_ms_3.data, min.cells = min.cells, min.features = min.features, project = "csf_ms_3")
+csf_ms_4.data <- CreateSeuratObject(counts = csf_ms_4.data, min.cells = min.cells, min.features = min.features, project = "csf_ms_4")
+csf_ms_5.data <- CreateSeuratObject(counts = csf_ms_5.data, min.cells = min.cells, min.features = min.features, project = "csf_ms_5")
+csf_ms_6.data <- CreateSeuratObject(counts = csf_ms_6.data, min.cells = min.cells, min.features = min.features, project = "csf_ms_6")
+csf_cont_1.data <- CreateSeuratObject(counts = csf_cont_1.data, min.cells = min.cells, min.features = min.features, project = "csf_cont_1")
+csf_cont_2.data <- CreateSeuratObject(counts = csf_cont_2.data, min.cells = min.cells, min.features = min.features, project = "csf_cont_2")
+csf_cont_3.data <- CreateSeuratObject(counts = csf_cont_3.data, min.cells = min.cells, min.features = min.features, project = "csf_cont_3")
+csf_cont_4.data <- CreateSeuratObject(counts = csf_cont_4.data, min.cells = min.cells, min.features = min.features, project = "csf_cont_4")
+csf_cont_5.data <- CreateSeuratObject(counts = csf_cont_5.data, min.cells = min.cells, min.features = min.features, project = "csf_cont_5")
+csf_cont_6.data <- CreateSeuratObject(counts = csf_cont_6.data, min.cells = min.cells, min.features = min.features, project = "csf_cont_6")
 
-pbmc_ms_1.data <- CreateSeuratObject(counts = pbmc_ms_1.data, min.cells = 3, min.features = 200, project = "pbmc_ms_1")
-pbmc_ms_2.data <- CreateSeuratObject(counts = pbmc_ms_2.data, min.cells = 3, min.features = 200, project = "pbmc_ms_2")
-pbmc_ms_3.data <- CreateSeuratObject(counts = pbmc_ms_3.data, min.cells = 3, min.features = 200, project = "pbmc_ms_3")
-pbmc_ms_4.data <- CreateSeuratObject(counts = pbmc_ms_4.data, min.cells = 3, min.features = 200, project = "pbmc_ms_4")
-pbmc_ms_5.data <- CreateSeuratObject(counts = pbmc_ms_5.data, min.cells = 3, min.features = 200, project = "pbmc_ms_5")
-pbmc_cont_1.data <- CreateSeuratObject(counts = pbmc_cont_1.data, min.cells = 3, min.features = 200, project = "pbmc_cont_1")
-pbmc_cont_2.data <- CreateSeuratObject(counts = pbmc_cont_2.data, min.cells = 3, min.features = 200, project = "pbmc_cont_2")
-pbmc_cont_3.data <- CreateSeuratObject(counts = pbmc_cont_3.data, min.cells = 3, min.features = 200, project = "pbmc_cont_3")
-pbmc_cont_4.data <- CreateSeuratObject(counts = pbmc_cont_4.data, min.cells = 3, min.features = 200, project = "pbmc_cont_4")
-pbmc_cont_5.data <- CreateSeuratObject(counts = pbmc_cont_5.data, min.cells = 3, min.features = 200, project = "pbmc_cont_5")
+pbmc_ms_1.data <- CreateSeuratObject(counts = pbmc_ms_1.data, min.cells = min.cells, min.features = min.features, project = "pbmc_ms_1")
+pbmc_ms_2.data <- CreateSeuratObject(counts = pbmc_ms_2.data, min.cells = min.cells, min.features = min.features, project = "pbmc_ms_2")
+pbmc_ms_3.data <- CreateSeuratObject(counts = pbmc_ms_3.data, min.cells = min.cells, min.features = min.features, project = "pbmc_ms_3")
+pbmc_ms_4.data <- CreateSeuratObject(counts = pbmc_ms_4.data, min.cells = min.cells, min.features = min.features, project = "pbmc_ms_4")
+pbmc_ms_5.data <- CreateSeuratObject(counts = pbmc_ms_5.data, min.cells = min.cells, min.features = min.features, project = "pbmc_ms_5")
+pbmc_cont_1.data <- CreateSeuratObject(counts = pbmc_cont_1.data, min.cells = min.cells, min.features = min.features, project = "pbmc_cont_1")
+pbmc_cont_2.data <- CreateSeuratObject(counts = pbmc_cont_2.data, min.cells = min.cells, min.features = min.features, project = "pbmc_cont_2")
+pbmc_cont_3.data <- CreateSeuratObject(counts = pbmc_cont_3.data, min.cells = min.cells, min.features = min.features, project = "pbmc_cont_3")
+pbmc_cont_4.data <- CreateSeuratObject(counts = pbmc_cont_4.data, min.cells = min.cells, min.features = min.features, project = "pbmc_cont_4")
+pbmc_cont_5.data <- CreateSeuratObject(counts = pbmc_cont_5.data, min.cells = min.cells, min.features = min.features, project = "pbmc_cont_5")
 
 csf_ms <- merge(csf_ms_1.data, c(csf_ms_2.data, csf_ms_3.data, csf_ms_4.data, csf_ms_5.data,csf_ms_6.data), add.cell.ids = c("csf_ms_1", "csf_ms_2", "csf_ms_3", "csf_ms_4", "csf_ms_5", "csf_ms_6"))
 csf_cont <- merge(csf_cont_1.data, c(csf_cont_2.data, csf_cont_3.data, csf_cont_4.data, csf_cont_5.data, csf_cont_6.data),add.cell.ids = c("csf_cont_1", "csf_cont_2", "csf_cont_3", "csf_cont_4", "csf_cont_5", "csf_cont_6" ))
@@ -86,6 +90,8 @@ rm(csf_ms_1.data, csf_ms_2.data, csf_ms_3.data, csf_ms_4.data,
    pbmc_cont_3.data, pbmc_cont_4.data, pbmc_cont_5.data)
 # run garbage collect to free up memory
 gc()
+
+# PROCESS DATA
 
 csf_ms.list <- SplitObject(csf_ms)
 csf_cont.list <- SplitObject(csf_cont)
@@ -153,7 +159,7 @@ csf_ms.anchors <- FindIntegrationAnchors(object.list = csf_ms.list, normalizatio
 csf_ms.integrated <- IntegrateData(anchorset = csf_ms.anchors, normalization.method = "SCT", 
                                      verbose = FALSE)
 
-# clustering
+# Clustering
 
 csf_ms.integrated <- RunPCA(csf_ms.integrated, verbose = FALSE)
 csf_ms.integrated <- RunUMAP(csf_ms.integrated, dims = 1:30)
@@ -177,8 +183,6 @@ FeaturePlot(csf_ms.integrated, features = top_chf_ms.markers$gene)
 
 
 
-signatures <- c("/mnt/Data10tb/student9_data/GSE138266_RAW/Signatures/c7.all.v7.2.symbols.gmt")
-
 vision.obj_pbmc_cont <- VISION::Vision(pbmc_cont.integrated, signatures = signatures, projection_methods = "UMAP")
 
 vision.obj_pbmc_cont <- analyze(vision.obj_pbmc_cont)
@@ -201,24 +205,24 @@ pbmc_ms.cluster.ids <- pbmc_ms.markers_annot$scCATCH_cell_type
 names(pbmc_ms.cluster.ids) <- levels(pbmc_ms.integrated)
 pbmc_ms.integrated <- RenameIdents(pbmc_ms.integrated, pbmc_ms.cluster.ids)
 
-DimPlot(pbmc_ms.integrated, reduction = "umap", label = TRUE, pt.size = 0.5) + NoLegend()
+Seurat::DimPlot(pbmc_ms.integrated, reduction = "umap", label = TRUE, pt.size = 0.5) + NoLegend()
 
 pbmc_cont.cluster.ids <- pbmc_cont.markers_annot$scCATCH_cell_type
 names(pbmc_cont.cluster.ids) <- levels(pbmc_cont.integrated)
 pbmc_cont.integrated <- RenameIdents(pbmc_cont.integrated, pbmc_cont.cluster.ids)
 
-DimPlot(pbmc_cont.integrated, reduction = "umap", label = TRUE, pt.size = 0.5) + NoLegend()
+Seurat::DimPlot(pbmc_cont.integrated, reduction = "umap", label = TRUE, pt.size = 0.5) + NoLegend()
 
 
 #####diff exp analysis
 pbmc.merge <- merge(pbmc_ms.integrated, pbmc_cont.integrated, add.cell.ids = c("pbmc_ms.integrated", "pbmc_cont.integrated"))
-pbmcall.list <- SplitObject(pbmc.merge)
+pbmcall.list <- Seurat::SplitObject(pbmc.merge)
 
 # Find differentially expressed features between CD14+ and FCGR3A+ Monocytes
-monocyte.de.markers <- FindMarkers(pbmcall.list,  cells.1 = "pbmc_ms",cells.1 = "pbmc_cont")
+monocyte.de.markers <- Seurat::FindMarkers(pbmcall.list,  cells.1 = "pbmc_ms",cells.1 = "pbmc_cont")
 # view results
 head(monocyte.de.markers)
 
 
-list_objects_batches = SplitObject(CSF.integrated, split.by <- 'orig.ident')
+list_objects_batches = Seurat::SplitObject(CSF.integrated, split.by <- 'orig.ident')
 batch1 <- list_objects_batches[['CSF_MS_1']]
