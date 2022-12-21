@@ -1,47 +1,55 @@
-library(Matrix)
-library(Seurat)
-library(dplyr)
-# install.packages("harmony")
-library(harmony)
-library(SeuratDisk)
+#!/usr/bin/Rscript
+# -*- coding: utf-8 -*-
 
+if !require("Matrix") install.packages("Matrix")
+if !require("Seurat") install.packages("Seurat")
+if !require("dplyr") install.packages("dplyr")
+if !require("harmony") install.packages("harmony")
+if !require("SeuratDisk") install.packages("SeuratDisk")
 
+# PARAMS
 
-setwd ("/mnt/Data10tb/student9_data/GSE138266_RAW")
-####loading file 
-data.dir = "/mnt/Data10tb/student9_data/GSE138266_RAW/CSF_cont_3"
+WORKDIR <- "/data/ashevtsov/MS_data/raw_data/"
+setwd(WORKDIR)
 
-CSF_MS_1.data <- Read10X("/data/ashevtsov/MS_data/raw_data/GSM4104122_MS19270_CSF")
-CSF_MS_2.data <- Read10X("/data/ashevtsov/MS_data/raw_data/GSM4104123_MS58637_CSF")
-CSF_MS_3.data <- Read10X("/data/ashevtsov/MS_data/raw_data/GSM4104124_MS71658_CSF")
-CSF_MS_4.data <- Read10X("/data/ashevtsov/MS_data/raw_data/GSM4104125_MS49131_CSF")
-CSF_MS_5.data <- Read10X("/data/ashevtsov/MS_data/raw_data/GSM4104126_MS60249_CSF")
-CSF_MS_6.data <- Read10X("/data/ashevtsov/MS_data/raw_data/GSM4104127_MS74594_CSF")
+min.cells = 3
+min.features = 200
 
-CSF_cont_1.data <- Read10X("/data/ashevtsov/MS_data/raw_data/GSM4104128_PST83775_CSF")
-CSF_cont_2.data <- Read10X("/data/ashevtsov/MS_data/raw_data/GSM4104129_PTC32190_CSF")
-CSF_cont_3.data <- Read10X("/data/ashevtsov/MS_data/raw_data/GSM4104130_PST95809_CSF")
-CSF_cont_4.data <- Read10X("/data/ashevtsov/MS_data/raw_data/GSM4104131_PTC41540_CSF")
-CSF_cont_5.data <- Read10X("/data/ashevtsov/MS_data/raw_data/GSM4104132_PST45044_CSF")
-CSF_cont_6.data <- Read10X("/data/ashevtsov/MS_data/raw_data/GSM4104133_PTC85037_CSF")
+cell.ids <- c("CSF_MS_1", "CSF_MS_2", "CSF_MS_3", "CSF_MS_4", "CSF_MS_5", "CSF_MS_6.data", 
+              "CSF_cont_1", "CSF_cont_2", "CSF_cont_3", "CSF_cont_4", "CSF_cont_5", "CSF_cont_6.data")
 
-CSF_MS_1.data <- CreateSeuratObject(counts = CSF_MS_1.data, min.cells = 3, min.features = 200, project = "CSF_MS_1")
-CSF_MS_2.data <- CreateSeuratObject(counts = CSF_MS_2.data, min.cells = 3, min.features = 200, project = "CSF_MS_2")
-CSF_MS_3.data <- CreateSeuratObject(counts = CSF_MS_3.data, min.cells = 3, min.features = 200, project = "CSF_MS_3")
-CSF_MS_4.data <- CreateSeuratObject(counts = CSF_MS_4.data, min.cells = 3, min.features = 200, project = "CSF_MS_4")
-CSF_MS_5.data <- CreateSeuratObject(counts = CSF_MS_5.data, min.cells = 3, min.features = 200, project = "CSF_MS_5")
-CSF_MS_6.data <- CreateSeuratObject(counts = CSF_MS_6.data, min.cells = 3, min.features = 200, project = "CSF_MS_6")
+# LOAD DATA
 
-CSF_cont_1.data <- CreateSeuratObject(counts = CSF_cont_1.data, min.cells = 3, min.features = 200, project = "CSF_cont_1")
-CSF_cont_2.data <- CreateSeuratObject(counts = CSF_cont_2.data, min.cells = 3, min.features = 200, project = "CSF_cont_2")
-CSF_cont_3.data <- CreateSeuratObject(counts = CSF_cont_3.data, min.cells = 3, min.features = 200, project = "CSF_cont_3")
-CSF_cont_4.data <- CreateSeuratObject(counts = CSF_cont_4.data, min.cells = 3, min.features = 200, project = "CSF_cont_4")
-CSF_cont_5.data <- CreateSeuratObject(counts = CSF_cont_5.data, min.cells = 3, min.features = 200, project = "CSF_cont_5")
-CSF_cont_6.data <- CreateSeuratObject(counts = CSF_cont_6.data, min.cells = 3, min.features = 200, project = "CSF_cont_6")
+CSF_MS_1.data <- Read10X(file.path(WORKDIR, "GSM4104122_MS19270_CSF")
+CSF_MS_2.data <- Read10X(file.path(WORKDIR, "GSM4104123_MS58637_CSF")
+CSF_MS_3.data <- Read10X(file.path(WORKDIR, "GSM4104124_MS71658_CSF")
+CSF_MS_4.data <- Read10X(file.path(WORKDIR, "GSM4104125_MS49131_CSF")
+CSF_MS_5.data <- Read10X(file.path(WORKDIR, "GSM4104126_MS60249_CSF")
+CSF_MS_6.data <- Read10X(file.path(WORKDIR, "GSM4104127_MS74594_CSF")
+
+CSF_cont_1.data <- Read10X(file.path(WORKDIR, "GSM4104128_PST83775_CSF")
+CSF_cont_2.data <- Read10X(file.path(WORKDIR, "GSM4104129_PTC32190_CSF")
+CSF_cont_3.data <- Read10X(file.path(WORKDIR, "GSM4104130_PST95809_CSF")
+CSF_cont_4.data <- Read10X(file.path(WORKDIR, "GSM4104131_PTC41540_CSF")
+CSF_cont_5.data <- Read10X(file.path(WORKDIR, "GSM4104132_PST45044_CSF")
+CSF_cont_6.data <- Read10X(file.path(WORKDIR, "GSM4104133_PTC85037_CSF")
+
+CSF_MS_1.data <- CreateSeuratObject(counts = CSF_MS_1.data, min.cells = min.cells, min.features = min.features, project = "CSF_MS_1")
+CSF_MS_2.data <- CreateSeuratObject(counts = CSF_MS_2.data, min.cells = min.cells, min.features = min.features, project = "CSF_MS_2")
+CSF_MS_3.data <- CreateSeuratObject(counts = CSF_MS_3.data, min.cells = min.cells, min.features = min.features, project = "CSF_MS_3")
+CSF_MS_4.data <- CreateSeuratObject(counts = CSF_MS_4.data, min.cells = min.cells, min.features = min.features, project = "CSF_MS_4")
+CSF_MS_5.data <- CreateSeuratObject(counts = CSF_MS_5.data, min.cells = min.cells, min.features = min.features, project = "CSF_MS_5")
+CSF_MS_6.data <- CreateSeuratObject(counts = CSF_MS_6.data, min.cells = min.cells, min.features = min.features, project = "CSF_MS_6")
+
+CSF_cont_1.data <- CreateSeuratObject(counts = CSF_cont_1.data, min.cells = min.cells, min.features = min.features, project = "CSF_cont_1")
+CSF_cont_2.data <- CreateSeuratObject(counts = CSF_cont_2.data, min.cells = min.cells, min.features = min.features, project = "CSF_cont_2")
+CSF_cont_3.data <- CreateSeuratObject(counts = CSF_cont_3.data, min.cells = min.cells, min.features = min.features, project = "CSF_cont_3")
+CSF_cont_4.data <- CreateSeuratObject(counts = CSF_cont_4.data, min.cells = min.cells, min.features = min.features, project = "CSF_cont_4")
+CSF_cont_5.data <- CreateSeuratObject(counts = CSF_cont_5.data, min.cells = min.cells, min.features = min.features, project = "CSF_cont_5")
+CSF_cont_6.data <- CreateSeuratObject(counts = CSF_cont_6.data, min.cells = min.cells, min.features = min.features, project = "CSF_cont_6")
 
 CSF <- merge(CSF_MS_1.data, c(CSF_MS_2.data, CSF_MS_3.data, CSF_MS_4.data, CSF_MS_5.data, CSF_MS_6.data, CSF_cont_1.data, CSF_cont_2.data, CSF_cont_3.data, CSF_cont_4.data, CSF_cont_5.data, CSF_cont_6.data), 
-              add.cell.ids = c("CSF_MS_1", "CSF_MS_2", "CSF_MS_3", "CSF_MS_4", "CSF_MS_5", "CSF_MS_6.data", 
-                               "CSF_cont_1", "CSF_cont_2", "CSF_cont_3", "CSF_cont_4", "CSF_cont_5", "CSF_cont_6.data"))
+              add.cell.ids = cell.ids)
 
 
 CSF.list <- SplitObject(CSF)
@@ -65,6 +73,8 @@ rm(CSF_MS_1.data, CSF_MS_2.data, CSF_MS_3.data, CSF_MS_4.data,
    CSF_cont_3.data, CSF_cont_4.data, CSF_cont_5.data, CSF_cont_6.data)
 # run garbage collect to free up memory
 gc()
+
+# PROCESS DATA
 
 for (i in 1:length(CSF.list)) {
   # filtering
