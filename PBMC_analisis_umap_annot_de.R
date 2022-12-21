@@ -211,12 +211,14 @@ plot_name = '/data/ashevtsov/MS_data/PBMC/PBMC_integrated_markers.csv'
 write.csv(PBMC.markers, plot_name)
 
 
+file_name = paste('/data/ashevtsov/MS_data/PBMC/','PBMC_cell_counts.csv', sep = '')
+cells_counts <- as.data.frame.matrix(table(Idents(PBMC.integrated), PBMC.integrated$stim))
+write.csv(cells_counts, file_name)
 
 ## plot number of cells among condition
 cells_counts <- data.frame(Idents(PBMC.integrated), PBMC.integrated$stim)
-file_name = paste('/data/ashevtsov/MS_data/PBMC/','PBMC_cell_counts.csv', sep = '')
 colnames(cells_counts) <- c('Cell_Type', 'Condition')
-write_csv(cells_counts, file_name)
+
 
 library(dplyr)
 cells_counts <- cells_counts %>% group_by(Condition, Cell_Type) %>% 

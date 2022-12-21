@@ -186,6 +186,9 @@ CSF.markers <- FindAllMarkers(CSF.integrated, min.pct = 0.3, logfc.threshold = 0
 plot_name = '/data/ashevtsov/MS_data/integrated_markers.csv'
 write.csv(CSF.markers, plot_name)
 
+file_name = paste('/data/ashevtsov/MS_data/CSF/','CSF_cell_counts.csv', sep = '')
+cells_counts <- as.data.frame.matrix(table(Idents(CSF.integrated), CSF.integrated$stim))
+write.csv(cells_counts, file_name)
 
 ## plot number of cells among condition
 cells_counts <- data.frame(Idents(CSF.integrated), CSF.integrated$stim)
